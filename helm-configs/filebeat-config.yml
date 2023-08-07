@@ -1,0 +1,44 @@
+daemonset:
+  hostNetworking: false
+  filebeatConfig:
+    filebeat.yml: |
+      filebeat.autodiscover:
+        providers:
+          - type: kubernetes
+            templates:
+              - condition:
+                  contains:
+                    kubernetes.namespace: "devops-payfac-micro"
+                config:
+                - type: container
+                  paths:
+                    - /var/log/containers/*-${data.kubernetes.container.id}.log
+        processors:
+          - decode_json_fields:
+              fields: ["message"]
+              target: ""
+              process_array: true
+      processors:
+        - drop_fields:
+            fields: 
+              - "agent"
+              - "input"
+              - "kubernetes.container"
+              - "kubernetes.node"
+              - "kubernetes.namespace_uid"
+              - "kubernetes.namespace_labels"
+              - "kubernetes.pod.uid"
+              - "log"
+              - "stream"
+            ignore_missing: true
+      output.logstash:
+        hosts: ["10.43.196.102:5044", "10.43.196.160:5044"]
+  extraVolumes:
+    - name: varlogcontainerdcontainers
+      hostPath:
+        path: /var/log/containers
+        type: ''
+  extraVolumeMounts:
+    - name: varlogcontainerdcontainers
+      readOnly: true
+      mountPath: /var/log/containers

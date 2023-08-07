@@ -1,0 +1,9 @@
+githubEnterpriseServerURL: https://github.worldpay.com
+authSecret:
+  create: true
+  github_token:
+image:
+  actionsRunnerRepositoryAndTag: "slflokydlnexs60.infoftps.com:6789/maven-runner"
+  dindSidecarRepositoryAndTag: "slflokydlnexs60.infoftps.com:6789/dind-nexus"
+metrics:
+  serviceMonitor: true

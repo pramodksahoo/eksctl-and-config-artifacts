@@ -1,0 +1,47 @@
+# Custom GitHub Actions self-hosted runner image
+# By Matt Henry
+# slflokydlnexs60.infoftps.com:6789/maven-runner
+FROM summerwind/actions-runner:latest
+
+# Apps that use Apache POI to create spreadsheets need this native binary
+RUN sudo apt-get update -y && sudo apt-get install libfreetype6 fontconfig wget -y
+
+RUN sudo wget https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
+RUN sudo tar xf openjdk-17.0.2_linux-x64_bin.tar.gz -C /opt
+RUN sudo rm openjdk-17.0.2_linux-x64_bin.tar.gz
+
+ENV JAVA_HOME /opt/jdk-17.0.2
+RUN export JAVA_HOME
+
+RUN sudo wget https://dlcdn.apache.org/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz
+RUN sudo tar xf apache-maven-3.8.5-bin.tar.gz -C /opt
+RUN sudo rm apache-maven-3.8.5-bin.tar.gz
+
+ENV M2_HOME /opt/apache-maven-3.8.5
+RUN export M2_HOME
+
+ENV MAVEN_HOME /opt/apache-maven-3.8.5
+RUN export MAVEN_HOME
+
+ENV PATH="${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${PATH}"
+
+# We should probably provide this via mounted volume
+RUN mkdir /home/runner/.m2
+COPY settings.xml /home/runner/.m2/
+
+# Certs so we can talk to our internal Nexus Maven Repository
+COPY dp-mid.cer mid.cer
+COPY dp-root.cer root.cer
+
+COPY ws-int-mid.cer ws-int-mid.cer
+COPY ws-int-root.cer ws-int-root.cer
+
+RUN sudo keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias mid -file mid.cer\
+&& sudo keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias root -file root.cer
+
+RUN sudo keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias ws-mid -file ws-int-mid.cer\
+&& sudo keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias ws-root -file ws-int-root.cer
+
+# We should probably provide this via mounted volume, or login w/ GitHub Action
+RUN mkdir /home/runner/.docker
+COPY config.json /home/runner/.docker/

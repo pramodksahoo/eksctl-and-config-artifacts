@@ -1,0 +1,8 @@
+# slflokydlnexs60.infoftps.com:6789/dind-nexus
+FROM docker:dind
+
+COPY vantiv-root.crt /etc/ssl/certs/
+
+USER root
+
+RUN update-ca-certificates

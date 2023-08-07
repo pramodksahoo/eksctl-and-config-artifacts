@@ -1,0 +1,10 @@
+# Create this in each namespace that will host Spring Boot apps
+# and make sure it's included in each deployment's environment
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: environment
+data:
+  LANG: en_US.UTF-8
+  LOGGING_LEVEL_COM_ULISESBOCCHIO_JASYPTSPRINGBOOT: WARN
+  SPRING_PROFILES_ACTIVE: uat

@@ -1,0 +1,7 @@
+aws ssm send-command --targets Key=tag:eks:nodegroup-name,Values=ng-1 \
+--targets Key=tag:eks:cluster-name,Values=payfac-test \
+--document-name "AWS-RunShellScript" \
+--comment "Bottlerocket API Set Registry Credentials" \
+--cli-input-json file://credentials.json \
+--output text \
+--query "Command.CommandId"

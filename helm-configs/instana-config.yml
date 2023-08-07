@@ -1,0 +1,8 @@
+agent:
+  endpointHost: ingress-blue-saas.instana.io
+  endpointPort: 443
+  key:
+cluster:
+  name: commhub-uat
+zone:
+  name: us-east-2

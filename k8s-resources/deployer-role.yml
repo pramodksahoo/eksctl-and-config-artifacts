@@ -1,0 +1,75 @@
+# Create a RoleBinding in each namespace that you want
+# this service account to be able to deploy to.
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: deployer
+rules:
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - ''
+      - autoscaling
+    resources:
+      - pods
+      - services
+      - configmaps
+      - secrets
+      - horizontalpodautoscalers
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - apps
+    resources:
+      - deployments
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - batch
+      - extensions
+    resources:
+      - cronjobs
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+    apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+      - podmonitors
+      - probes

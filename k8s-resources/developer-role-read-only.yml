@@ -1,0 +1,56 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: developer-read-only
+rules:
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - extensions
+      - batch
+      - apps
+      - autoscaling
+      - '*'
+    resources:
+      - '*'
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - '*'
+    resources:
+      - bindings
+      - componentstatuses
+      - configmaps
+      - deployments
+      - endpoints
+      - events
+      - pods
+      - pods/attach
+      - pods/binding
+      - pods/eviction
+      - pods/exec
+      - pods/log
+      - pods/portforward
+      - pods/proxy
+      - pods/status
+      - podtemplates
+      - secrets
+      - serviceaccounts
+      - services
+      - services/proxy
+      - services/status
+      - ingresses
+      - horizontalpodautoscalers
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+      - podmonitors

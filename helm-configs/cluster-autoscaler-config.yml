@@ -1,0 +1,12 @@
+autoDiscovery:
+  clusterName: commhub-uat
+  tags:
+    - k8s.io/cluster-autoscaler/enabled
+    - k8s.io/cluster-autoscaler/{{ .Values.autoDiscovery.clusterName }}
+awsRegion: us-east-2
+extraArgs:
+  skip-nodes-with-local-storage: false
+image:
+  tag: v1.23.1
+serviceMonitor:
+  enabled: true

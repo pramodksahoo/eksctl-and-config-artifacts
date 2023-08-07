@@ -1,0 +1,29 @@
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.5.0
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+  - name: velero-plugin-for-csi
+    image: velero/velero-plugin-for-csi:v0.3.0
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+metrics:
+  serviceMonitor:
+    enabled: true
+configuration:
+  provider: aws
+  features: EnableCSI
+  backupStorageLocation:
+    name: s3-bucket
+    bucket: commhub-uat-us-east-2
+    default: true
+    config:
+      region: us-east-2
+  volumeSnapshotLocation:
+    name: aws
+    config:
+      region: us-east-2

@@ -1,0 +1,56 @@
+# nonk8s
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: commhub-uat
+  region: us-east-2
+  version: '1.23'
+
+addons:
+  - name: aws-ebs-csi-driver
+    version: latest
+    wellKnownPolicies:
+      ebsCSIController: true
+  - name: kube-proxy
+    version: latest
+
+managedNodeGroups:
+  - name: uat-ng-1
+    instanceType: m5.xlarge
+    desiredCapacity: 6
+    minSize: 6
+    maxSize: 6
+    amiFamily: AmazonLinux2
+    privateNetworking: true
+    ssh:
+      publicKeyName: eks-commhub-uat
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::590668254273:policy/velero-uat-us-east-2
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+    securityGroups:
+      attachIDs:
+        - sg-01b97933c2df11ebd
+        - sg-0cca0c4b8827d50ae
+        - sg-0fbf72d96869722d8
+    tags:
+      k8s.io/cluster-autoscaler/commhub-uat: owned
+      k8s.io/cluster-autoscaler/enabled: 'true'
+
+vpc:
+  id: vpc-02b08f5bed90a8403
+  subnets:
+    private:
+      us-east-2a:
+        id: subnet-098792ef1169874db
+      us-east-2b:
+        id: subnet-0292467ba7f2b9e7a
+      us-east-2c:
+        id: subnet-00f506825144754dc

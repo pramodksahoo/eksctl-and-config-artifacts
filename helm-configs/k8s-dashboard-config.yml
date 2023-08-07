@@ -1,0 +1,26 @@
+service:
+  type: NodePort
+  externalPort: 443
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(/dashboard)$ $1/ redirect;
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  hosts:
+    - pp-commhub.nonprod.nb01.local
+  customPaths:
+    - pathType: Prefix
+      path: /dashboard(/|$)(.*)
+      backend:
+        service:
+          name: k8s-dashboard-kubernetes-dashboard
+          port:
+            number: 443
+  tls:
+    - secretName: commhub-pub-tls-secret
+      hosts:
+        - pp-commhub.nonprod.nb01.local
+serviceMonitor:
+  enabled: true

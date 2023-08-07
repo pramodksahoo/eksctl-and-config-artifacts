@@ -1,0 +1,15 @@
+controller:
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+  watchIngressWithoutClass: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: ingress-nginx
+  config:
+    client-header-buffer-size: "2k"
+    large-client-header-buffers: "4 128k"
